@@ -6,7 +6,7 @@ console.log("port:", port);
 console.log("host:", host);
 
 // Create a server with a host and port
-var server = Hapi.createServer(host, port, { cors: true });
+var server = new Hapi.Server(host,port,{ cors: true });
 
 // Add the route
 server.route({
