@@ -1,4 +1,4 @@
 eager-beaver
 ============
 
-Eager Beaver - Staticstack build server
+Eager Beaver - [Staticstack](https://github.knowit.no/kyber/staticstack) build server
