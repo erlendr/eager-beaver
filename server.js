@@ -16,6 +16,7 @@ server.route({
 	method: 'GET',
 	path: '/',
 	handler: function (request, reply) {
+		console.log(request);
 		reply('Welcome to Eager Beaver 0.1');
 	}
 });
