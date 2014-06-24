@@ -1,12 +1,10 @@
 var Hapi = require('hapi');
 
-var host = process.env.PORT || 'localhost';
-
 var server; 
 
 if(process.env.PORT) {
-	// Create a server with a host and port
-	server = new Hapi.Server(host, { cors: true });
+	// Azure init
+	server = new Hapi.Server(process.env.PORT, { cors: true });
 }
 else {
 	// Create localhost server
