@@ -2,6 +2,8 @@ var Hapi = require('hapi');
 
 var port = process.env.PORT || 8000;
 var host = process.env.HOST || 'localhost';
+console.log("port:", port);
+console.log("host:", host);
 
 // Create a server with a host and port
 var server = Hapi.createServer(host, port, { cors: true });
