@@ -2,18 +2,24 @@ var Hapi = require('hapi');
 
 var host = process.env.PORT || 'localhost';
 
-console.log("host:", host);
+var server; 
 
-// Create a server with a host and port
-var server = new Hapi.Server(host, 0,{ cors: true });
+if(process.env.PORT) {
+	// Create a server with a host and port
+	server = new Hapi.Server(host, { cors: true });
+}
+else {
+	// Create localhost server
+	server = new Hapi.Server('localhost', 0, { cors: true });
+}
 
 // Add the route
 server.route({
-  method: 'GET',
-  path: '/',
-  handler: function (request, reply) {
-    reply('Welcome to Eager Beaver 0.1');
-  }
+	method: 'GET',
+	path: '/',
+	handler: function (request, reply) {
+		reply('Welcome to Eager Beaver 0.1');
+	}
 });
 
 // Start the server
