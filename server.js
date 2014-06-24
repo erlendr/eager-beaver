@@ -8,7 +8,7 @@ if(process.env.PORT) {
 }
 else {
 	// Create localhost server
-	server = new Hapi.Server('localhost', 0, { cors: true });
+	server = new Hapi.Server('localhost', 8000, { cors: true });
 }
 
 // Add the route
