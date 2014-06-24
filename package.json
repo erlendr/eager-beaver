@@ -11,5 +11,9 @@
     "url": "https://github.knowit.no/kyber/eager-beaver.git"
   },
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "grunt": "^0.4.5",
+    "hapi": "^6.0.2"
+  }
 }
