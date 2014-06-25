@@ -30,14 +30,19 @@ github.repos.getArchiveLink(
 },
 function (err, res) {
   console.log('res.meta.location:', res.meta.location);
+  
   var url = res.meta.location;
-  var request = https.get(url, function(response) {
-    response
+  var request = https.get(url, function(res) {
+    var filename = res.headers['content-disposition'].split('filename=')[1].split('.tar.gz')[0];
+    console.log(filename);
+    res
     .pipe(zlib.createGunzip())
     .pipe(tar.Extract({
       path: 'work/'
-    }));
-    console.log('Archive inflated');
+    }))
+    .on('end', function(chunk) {
+      console.log('Archive inflated');
+    });
   });
 });
 
