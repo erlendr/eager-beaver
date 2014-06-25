@@ -38,11 +38,12 @@ function (err, res) {
     console.log("Done getting archive link, downloading file...");
     var url = res.meta.location;
     var request = https.get(url, function(res) {
-      var filename = res.headers['content-disposition'].split('filename=')[1].split('.tar.gz')[0];
+      var path = 'work/' + user + '/' + repo + '/';
+
       res
       .pipe(zlib.createGunzip())
-      .pipe(tar.extract('work/'));
-      console.log('Download and extraction done!');
+      .pipe(tar.extract(path));
+      console.log('Download and extraction done! See: ' + path);
     });
   }
   else {
