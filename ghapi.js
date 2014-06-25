@@ -21,24 +21,32 @@ github.authenticate({
   token: process.env.token
 });
 
+var repo = 'staticstack';
+var user = 'kyber';
+var branch = 'master';
+
+console.log("Getting archive link for branch '" + branch  + "' at '" + user + "/" + repo + "'");
 github.repos.getArchiveLink(
 {
-  user: 'kyber',
-  repo: 'staticstack',
+  user: user,
+  repo: repo,
   archive_format: 'tarball',
-  ref: 'master'
+  ref: branch
 },
 function (err, res) {
-  console.log('res.meta.location:', res.meta.location);
-  
-  var url = res.meta.location;
-  var request = https.get(url, function(res) {
-    var filename = res.headers['content-disposition'].split('filename=')[1].split('.tar.gz')[0];
-    console.log(filename);
-    res
-    .pipe(zlib.createGunzip())
-    .pipe(tar.extract('work/'));
-    console.log('done');
-  });
+  if(!err) {
+    console.log("Done getting archive link, downloading file...");
+    var url = res.meta.location;
+    var request = https.get(url, function(res) {
+      var filename = res.headers['content-disposition'].split('filename=')[1].split('.tar.gz')[0];
+      res
+      .pipe(zlib.createGunzip())
+      .pipe(tar.extract('work/'));
+      console.log('Download and extraction done!');
+    });
+  }
+  else {
+    console.log("Error:", err);
+  }
 });
 
