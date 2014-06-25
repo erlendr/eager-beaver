@@ -2,7 +2,7 @@ var GitHubApi = require('github');
 var https = require('https');
 var fs = require('fs');
 var zlib = require('zlib');
-var tar = require('tar');
+var tar = require('tar-fs');
 
 var github = new GitHubApi({
   // required
@@ -23,8 +23,8 @@ github.authenticate({
 
 github.repos.getArchiveLink(
 {
-  user: 'erlendr',
-  repo: 'webhook-test',
+  user: 'kyber',
+  repo: 'staticstack',
   archive_format: 'tarball',
   ref: 'master'
 },
@@ -37,12 +37,8 @@ function (err, res) {
     console.log(filename);
     res
     .pipe(zlib.createGunzip())
-    .pipe(tar.Extract({
-      path: 'work/'
-    }))
-    .on('end', function(chunk) {
-      console.log('Archive inflated');
-    });
+    .pipe(tar.extract('work/'));
+    console.log('done');
   });
 });
 
