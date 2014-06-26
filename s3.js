@@ -6,46 +6,48 @@ var s3 = new AWS.S3();
 
 var bucketName = 'eager-test';
 
-s3.listBuckets(function(err, data) {
-  if (err) console.log(err, err.stack); // an error occurred
-  else {
-    var bucketFound = false;
-    for(i = 0; i < data.Buckets.length; i++) {
-      if(data.Buckets[i].Name === bucketName) {
-        console.log('bucket "' + bucketName + '" found');
-        bucketFound = true;
-        break;
+console.log('Bucketname:', bucketName);
+
+createBucket(bucketName);
+
+function createBucket(bucketName) {
+  s3.createBucket({Bucket: bucketName}, function(err, data) {
+    if (err) {
+      if(err.code === 'BucketAlreadyOwnedByYou') {
+        console.log('Bucket already exists');
+        putBucketWebsite(bucketName);
+      }
+      else {
+        console.log(err, err.stack);
       }
     }
-    if(!bucketFound) {
-      console.log('bucket not found, creating...');
-      s3.createBucket({Bucket: bucketName}, function(err, data) {
-        if (err) console.log(err, err.stack);
-        else  {
-          console.log('bucket created:', data.Location);
-        }
-      });
+    else  {
+      console.log('bucket created:', data.Location);
+      putBucketWebsite(bucketName);
     }
-  }
-});
+  });
+}
 
-function putBucket(bucketName) {
+function putBucketWebsite(bucketName) {
+  console.log('Enabling website for bucket', bucketName);
   var params = {
-  Bucket: bucketName, // required
-  WebsiteConfiguration: { // required
-    ErrorDocument: {
-      Key: 'error.html' // required
-    },
-    IndexDocument: {
-      Suffix: 'index.html' // required
-    },
-    RedirectAllRequestsTo: {
-      HostName: 'STRING_VALUE', // required
-      Protocol: 'http | https'
+    Bucket: bucketName,
+    WebsiteConfiguration: {
+      ErrorDocument: {
+        Key: 'error.html'
+      },
+      IndexDocument: {
+        Suffix: 'index.html'
+      }
     }
   };
+
   s3.putBucketWebsite(params, function(err, data) {
-  if (err) console.log(err, err.stack); // an error occurred
-  else     console.log(data);           // successful response
-});
+    if (err) {
+      console.log(err, err.stack);
+    }
+    else {
+      console.log('Bucket website enabled');
+    }
+  });
 }
