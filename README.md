@@ -1,7 +1,7 @@
 Eager Beaver
 ============
 
-![Eager Beaver](https://pbs.twimg.com/media/Bq8FQi5IgAALcku.jpg:large)
+![Eager Beaver](https://dl.dropboxusercontent.com/u/41921564/eagerbeaver.png)
 
 [Staticstack](https://github.knowit.no/kyber/staticstack) build server
 
@@ -25,3 +25,4 @@ Packages
 - https://www.npmjs.org/package/rimraf
 - https://www.npmjs.org/package/pump
 - https://www.npmjs.org/package/s3
+=======
