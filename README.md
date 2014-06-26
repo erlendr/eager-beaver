@@ -24,5 +24,3 @@ Packages
 
 - https://www.npmjs.org/package/rimraf
 - https://www.npmjs.org/package/pump
-- https://www.npmjs.org/package/s3
-=======
