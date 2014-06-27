@@ -3,8 +3,6 @@ Eager Beaver
 
 ![Eager Beaver](https://dl.dropboxusercontent.com/u/41921564/eagerbeaver.png)
 
-[Staticstack](https://github.knowit.no/kyber/staticstack) build server
-
 Testing
 -------
 
