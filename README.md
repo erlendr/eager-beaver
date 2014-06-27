@@ -3,6 +3,8 @@ Eager Beaver
 
 ![Eager Beaver](https://dl.dropboxusercontent.com/u/41921564/eagerbeaver.png)
 
+http://eagerbeaver.io
+
 Testing
 -------
 
