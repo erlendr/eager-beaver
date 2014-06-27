@@ -16,7 +16,8 @@
     "hapi": "^6.0.2",
     "github": "^0.2.0",
     "tar-fs": "^0.3.3",
-    "aws-sdk": "^2.0.3"
+    "aws-sdk": "^2.0.3",
+    "s3": "^2.0.0"
   },
   "devDependencies": {
     "grunt": "^0.4.5"
