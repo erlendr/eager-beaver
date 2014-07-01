@@ -1,12 +1,17 @@
 var npm = require('npm');
 var fs = require('fs');
+var cp = require('child_process');
 
 var folder = './work/kyber/staticstack/kyber-staticstack-57b1371/';
 
 var packageName = require(folder + 'package.json').name;
+var deps = require(folder + 'package.json').dependencies;
 console.log('Package name:', packageName);
+console.log('Package deps:', deps);
 
-installPackage(folder);
+//installPackage(folder);
+
+buildSite(folder);
 
 var configObject = {};
 
@@ -24,22 +29,35 @@ function installPackage(folder) {
         return;
       }
 
-      console.log('Installing package located in folder', folder);
+      console.log('Installing dependencies for package located in folder', folder);
 
-      npm.commands.install(folder, folder, function (err, data) {
-        console.log(err, data)
+      npm.commands.install(folder, Object.keys(deps), function (err, data) {
+        console.log(err, data);
+
         if(!err) {
           console.log('Install successful!');
           var installDir = folder + 'node_modules/' + packageName;
           console.log('Package install dir:', installDir);
+          buildSite(installDir);
         }
       });
 
       npm.on("log", function (message) {
       // log the progress of the installation
       console.log(message);
-      });
+    });
 
     });
   });
+}
+
+function buildSite(installFolder) {
+  child = cp.exec('grunt', { cwd: folder},
+    function (error, stdout, stderr) {
+      console.log('stdout: ' + stdout);
+      console.log('stderr: ' + stderr);
+      if (error !== null) {
+        console.log('exec error: ' + error);
+      }
+    });
 }
