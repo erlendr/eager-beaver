@@ -9,9 +9,7 @@ var deps = require(folder + 'package.json').dependencies;
 console.log('Package name:', packageName);
 console.log('Package deps:', deps);
 
-//installPackage(folder);
-
-buildSite(folder);
+installPackage(folder);
 
 var configObject = {};
 
