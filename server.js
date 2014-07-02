@@ -39,10 +39,15 @@ server.route({
     console.log('payload.pusher.name:', payload.pusher.name);
     console.log('payload.head_commit.message:', payload.head_commit.message);
 
+    //var beaverBuild = require('./beaverbuild');
+    //beaverBuild.Build('./work/kyber/staticstack/kyber-staticstack-57b1371/', function(resultDir) {
+    //  console.log(resultDir);
+    //});
+
     reply({ 
-        greeting: 'Thanks Github!'
-      });
-    }
+      greeting: 'Thanks Github!'
+    });
+  }
 });
 
 // Start the server

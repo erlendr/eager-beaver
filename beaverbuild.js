@@ -2,18 +2,23 @@ var npm = require('npm');
 var fs = require('fs');
 var cp = require('child_process');
 
-var folder = './work/kyber/staticstack/kyber-staticstack-57b1371/';
+exports.Build = Build;
 
-var packageName = require(folder + 'package.json').name;
-var deps = require(folder + 'package.json').dependencies;
-console.log('Package name:', packageName);
-console.log('Package deps:', deps);
+function Build(path, callback) {
+  var targetPackage = require(path + 'package.json');
+  if(!targetPackage) {
+    console.error('Error: No package.json found in path "' + path + '"');
+    return;
+  }
 
-installPackage(folder);
+  console.log('Building package ' + targetPackage.name + '@' + targetPackage.version);
 
-var configObject = {};
+  installPackageDeps(path, targetPackage, function(installDir) {
+    buildSite(installDir, callback);
+  });
+}
 
-function installPackage(folder) {
+function installPackageDeps(folder, targetPackage, callback) {
   // Create node_modules folder inside target package folder
   var dirToCreate = folder + 'node_modules/';
   console.log('Creating dir', dirToCreate);
@@ -21,41 +26,40 @@ function installPackage(folder) {
   fs.mkdir(dirToCreate, function() {
     console.log('node_modules dir created');
 
-    npm.load(configObject, function (err) {
+    npm.load({}, function (err) {
       if(err) {
-        console.log('Error on NPM load:', err);
+        console.error('Error on NPM load:', err);
         return;
       }
 
       console.log('Installing dependencies for package located in folder', folder);
 
-      npm.commands.install(folder, Object.keys(deps), function (err, data) {
-        console.log(err, data);
-
+      npm.commands.install(folder, Object.keys(targetPackage.dependencies), function (err, data) {
         if(!err) {
           console.log('Install successful!');
-          var installDir = folder + 'node_modules/' + packageName;
-          console.log('Package install dir:', installDir);
-          buildSite(installDir);
+          callback(folder);
+        }
+        else {
+          console.log('Error installing package', err);
+          return;
         }
       });
 
       npm.on("log", function (message) {
-      // log the progress of the installation
-      console.log(message);
-    });
-
+        console.log(message);
+      });
     });
   });
 }
 
-function buildSite(installFolder) {
-  child = cp.exec('grunt', { cwd: folder},
+function buildSite(installFolder, callback) {
+  child = cp.exec('grunt', { cwd: installFolder},
     function (error, stdout, stderr) {
       console.log('stdout: ' + stdout);
       console.log('stderr: ' + stderr);
       if (error !== null) {
         console.log('exec error: ' + error);
       }
+      callback(installFolder + '/build/');
     });
 }
