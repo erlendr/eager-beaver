@@ -16,8 +16,10 @@ Testing
 TODO
 ----
 
- - Install `Github` NPM package
- - Fetch repo zip from GH, unzip and deploy
+ - Modulize code
+ - Integrate modules
+ - Use rimraf for cleanup
+ - Use async for queue?
 
 Packages
 --------
