@@ -3,6 +3,7 @@ var Fs = require('fs');
 var BeaverBuild = require('./beaverbuild');
 var Fetcher = require('./fetcher');
 var S3 = require('./s3');
+var rimraf = require('rimraf')
 
 var server; 
 
@@ -77,7 +78,11 @@ function handleWebhook(payload) {
         function(resultDir) {
           var bucketName = payload.repository.name;
           S3.Deploy(bucketName, resultDir, function(url) {
-            console.log(url);
+            console.log('Site deployed:', url);
+            console.log('Cleaning up...');
+            rimraf(targetPackageDir, function(err) {
+              console.error('Error cleaning up:', err);
+            });
           });
       });
     }
