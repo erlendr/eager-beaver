@@ -1,1 +1,3 @@
 export token=your_github_token
+export dnsimple_api_token=your_dnsimple_token
+export dnsimple_email=erlend@erlend.net
