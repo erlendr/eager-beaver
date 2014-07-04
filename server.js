@@ -2,6 +2,7 @@ var Hapi = require('hapi');
 var Fs = require('fs');
 var BeaverBuild = require('./beaverbuild');
 var Fetcher = require('./fetcher');
+var S3 = require('./s3');
 
 var server; 
 
@@ -74,7 +75,10 @@ function handleWebhook(payload) {
         + payload.head_commit.id.substring(0, 7)
         + '/',
         function(resultDir) {
-        console.log(resultDir);
+          var bucketName = payload.repository.name;
+          S3.Deploy(bucketName, resultDir, function(url) {
+            console.log(url);
+          });
       });
     }
   );
