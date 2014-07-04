@@ -1,40 +1,52 @@
 var AWS = require('aws-sdk');
 var s3 = require('s3');
+var mime = require('mime');
 
-AWS.config.loadFromPath('./s3config.json');
-var awsS3Client = new AWS.S3();
+exports.Deploy = Deploy;
 
-var options = {
-  s3Client: awsS3Client,
-};
+function Deploy(bucketName, localDir, callback) {
+  AWS.config.loadFromPath('./s3config.json');
+  var awsS3Client = new AWS.S3();
 
-var client = s3.createClient(options);
+  var options = {
+    s3Client: awsS3Client,
+  };
 
-var bucketName = 'eager-test';
+  var client = s3.createClient(options);
 
-console.log('Bucketname:', bucketName);
+  console.log('Region:', client.s3.config.region);
 
-createBucket(bucketName);
+  console.log('Bucketname:', bucketName);
 
-function createBucket(bucketName) {
+  createBucket(awsS3Client, bucketName, function(data) {
+    putBucketWebsite(awsS3Client, bucketName, function(data) {
+      sync(client, bucketName, localDir, callback);
+    });
+  });
+
+}
+
+function createBucket(awsS3Client, bucketName, callback) {
+  console.log('Creating bucket "' + bucketName + '"');
+
   awsS3Client.createBucket({Bucket: bucketName}, function(err, data) {
     if (err) {
       if(err.code === 'BucketAlreadyOwnedByYou') {
         console.log('Bucket already exists');
-        putBucketWebsite(bucketName);
+        callback();
       }
       else {
-        console.log(err, err.stack);
+        console.error(err, err.stack);
       }
     }
     else  {
       console.log('bucket created:', data.Location);
-      putBucketWebsite(bucketName);
+      callback(data);
     }
   });
 }
 
-function putBucketWebsite(bucketName) {
+function putBucketWebsite(awsS3Client, bucketName, callback) {
   console.log('Enabling website for bucket', bucketName);
   var params = {
     Bucket: bucketName,
@@ -54,29 +66,64 @@ function putBucketWebsite(bucketName) {
     }
     else {
       console.log('Bucket website enabled');
-      sync(bucketName);
+      callback(data);
     }
   });
 }
 
-function sync(bucketName) {
+function getBucketWebsite(awsS3Client, bucketName, callback) {
+  console.log('Getting website info for bucket', bucketName);
   var params = {
-    localDir: './work/erlendr-webhook-test-c086d04',
+    Bucket: bucketName,
+  };
+
+  awsS3Client.getBucketWebsite(params, function(err, data) {
+    if (err) {
+      console.log(err, err.stack);
+    }
+    else {
+      console.log('Bucket website info:', data);
+      callback(data);
+    }
+  });
+}
+
+function createS3Params(localFile, stat, callback) {
+  var s3Params = {
+    ContentType: mime.lookup(localFile)
+  }
+
+  callback(null, s3Params);
+}
+
+function createS3WebsiteUrl(region, bucketName) {
+  return 'http://'  + bucketName + '.s3-website-' + region + '.amazonaws.com';
+}
+
+function sync(client, bucketName, localDir, callback) {
+  var params = {
+    localDir: localDir,
     deleteRemoved: false,
     s3Params: {
       Bucket: bucketName,
-      Prefix: ''
+      Prefix: '',
+      ACL: 'public-read'  
     },
+    getS3Params: createS3Params
   };
 
   var uploader = client.uploadDir(params);
   uploader.on('error', function(err) {
     console.error('unable to sync:', err.stack);
+    return;
   });
   uploader.on('progress', function() {
     console.log('progress', uploader.progressAmount, uploader.progressTotal);
   });
   uploader.on('end', function() {
     console.log('done uploading');
+
+    var siteUrl = createS3WebsiteUrl(client.s3.config.region, bucketName);
+    callback(siteUrl);
   });
 }
