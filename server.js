@@ -21,8 +21,7 @@ server.route({
   method: 'GET',
   path: '/',
   handler: function (request, reply) {
-    console.log(request);
-    reply('Welcome to Eager Beaver 0.1');
+    reply('Welcome to Eager Beaver!');
   }
 });
 
@@ -48,7 +47,6 @@ server.start(function () {
 });
 
 function handleWebhook(payload) {
-  console.log(payload.head_commit.id.substring(0, 7));
   console.log('payload.ref:', payload.ref);
   console.log('payload.repository.name:', payload.repository.name);
   console.log('payload.repository.organization:', payload.repository.organization);
@@ -73,7 +71,7 @@ function handleWebhook(payload) {
         + '-' 
         + payload.repository.name
         + '-'
-        + payload.head_commit.id.substring(0, 7)
+        + payload.head_commit.id
         + '/',
         function(resultDir) {
           var bucketName = payload.repository.name;

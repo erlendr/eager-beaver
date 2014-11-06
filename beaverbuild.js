@@ -1,4 +1,3 @@
-var npm = require('npm');
 var fs = require('fs');
 var cp = require('child_process');
 
@@ -13,52 +12,34 @@ function Build(path, callback) {
 
   console.log('Building package ' + targetPackage.name + '@' + targetPackage.version);
 
-  installPackageDeps(path, targetPackage, function(installDir) {
+  installPackageDeps(path, function(installDir) {
     buildSite(installDir, callback);
   });
 }
 
-function installPackageDeps(folder, targetPackage, callback) {
-  // Create node_modules folder inside target package folder
-  var dirToCreate = folder + 'node_modules/';
-  console.log('Creating dir', dirToCreate);
-
-  fs.mkdir(dirToCreate, function() {
-    console.log('node_modules dir created');
-
-    npm.load({}, function (err) {
-      if(err) {
-        console.error('Error on NPM load:', err);
-        return;
+function installPackageDeps(installDir, callback) {
+  child = cp.exec('npm install', {cwd: installDir},
+    function(error, stdout, stderr) {
+      console.log('installPackageDeps error: ' + stderr);
+      if (error !== null) {
+        console.log('installPackageDeps error: ' + error);
       }
-
-      console.log('Installing dependencies for package located in folder', folder);
-
-      npm.commands.install(folder, Object.keys(targetPackage.dependencies), function (err, data) {
-        if(!err) {
-          console.log('Install successful!');
-          callback(folder);
-        }
-        else {
-          console.log('Error installing package', err);
-          return;
-        }
-      });
-
-      npm.on("log", function (message) {
-        console.log(message);
-      });
+      //Calling supplied callback
+      callback(installDir);
     });
-  });
+
+  child.stdout.on('data', function(data) {
+    console.log(data)
+  })
 }
 
 function buildSite(installFolder, callback) {
   child = cp.exec('grunt', { cwd: installFolder},
     function (error, stdout, stderr) {
-      console.log('stdout: ' + stdout);
-      console.log('stderr: ' + stderr);
+      console.log('buildSite: ' + stdout);
+      console.log('buildSite error: ' + stderr);
       if (error !== null) {
-        console.log('exec error: ' + error);
+        console.log('buildSite error: ' + error);
       }
       callback(installFolder + '/build/');
     });
