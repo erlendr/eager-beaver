@@ -31,7 +31,8 @@ function createBucket(awsS3Client, bucketName, callback) {
 
   awsS3Client.createBucket({Bucket: bucketName}, function(err, data) {
     if (err) {
-      if(err.code === 'BucketAlreadyOwnedByYou') {
+      if(err.code === 'BucketAlreadyOwnedByYou' || 
+        err.code === 'BucketAlreadyExists') {
         console.log('Bucket already exists');
         callback();
       }
