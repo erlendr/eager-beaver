@@ -74,7 +74,9 @@ function handleWebhook(payload) {
         + payload.head_commit.id
         + '/',
         function(resultDir) {
-          var bucketName = payload.repository.name;
+          // Setting bucket name to name of repo
+          // TODO: Fetch this from repo build config
+          var bucketName = "eagerbeaver-" + payload.repository.name;
           S3.Deploy(bucketName, resultDir, function(url) {
             console.log('Site deployed:', url);
             console.log('Cleaning up...');
