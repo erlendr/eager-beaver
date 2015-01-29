@@ -14,7 +14,7 @@
   "license": "ISC",
   "dependencies": {
     "aws-sdk": "^2.0.3",
-    "github": "^0.2.0",
+    "github": "^0.2.3",
     "good": "^5.1.1",
     "good-console": "^4.1.0",
     "handlebars": "^2.0.0",

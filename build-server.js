@@ -100,13 +100,13 @@ function handleWebhook(payload) {
 
     Fetcher.DownloadAndExtractRepo(
       payload.repository.name,
-      payload.repository.organization,
+      payload.repository.owner.name,
       payload.repository.master_branch,
       function(targetPackageDir) {
         BeaverBuild.Build(
           './' +
           targetPackageDir 
-          + payload.repository.organization 
+          + payload.repository.owner.name
           + '-' 
           + payload.repository.name
           + '-'

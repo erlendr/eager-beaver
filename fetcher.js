@@ -6,7 +6,7 @@ var tar = require('tar-fs');
 
 var github = new GitHubApi({
   version: '3.0.0',
-  debug: false,
+  debug: true,
   protocol: 'https',
   host: 'github.knowit.no',
   pathPrefix: '/api/v3',
@@ -41,7 +41,7 @@ function DownloadAndExtractRepo(repo, user, branch, callback) {
       return;
     }
 
-    console.log('Done getting archive link, downloading file...');
+    console.log('Done getting archive link, downloading file...', res);
     var url = res.meta.location;
 
     var request = https.get(url, function(res) {
