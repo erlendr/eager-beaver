@@ -44,24 +44,4 @@ function deleteMessage(receiptHandle) {
   });
 };
 
-function sendMessage(messageBody) {
-  var params = {
-    MessageBody: messageBody, /* required */
-    QueueUrl: queueUrl, /* required */
-    DelaySeconds: 0,
-  };
-
-  sqs.sendMessage(params, function(err, data) {
-    if (err) {
-      console.error(err, err.stack); // an error occurred
-    }
-    else {
-      console.log(data);           // successful response
-    }
-
-  });
-}
-
 setInterval(receiveMessage, 2000);
-
-sendMessage('TESTING-123');
