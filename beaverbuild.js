@@ -24,6 +24,7 @@ function installPackageDeps(installDir, callback) {
       if (error !== null) {
         console.log('installPackageDeps error: ' + error);
       }
+      
       //Calling supplied callback
       callback(installDir);
     });
@@ -38,9 +39,12 @@ function buildSite(installFolder, callback) {
     function (error, stdout, stderr) {
       console.log('buildSite: ' + stdout);
       console.log('buildSite error: ' + stderr);
+      
       if (error !== null) {
         console.log('buildSite error: ' + error);
       }
+
+      //Calling supplied callback
       callback(installFolder + '/build/');
     });
 }
