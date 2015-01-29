@@ -4,7 +4,30 @@ var sqs = new AWS.SQS();
 
 var queueUrl = 'https://sqs.eu-west-1.amazonaws.com/342335610929/eagerbeaver';
 
-function receiveMessage() {
+exports.SendMessage = SendMessage;
+exports.ReceiveMessage = ReceiveMessage;
+
+function SendMessage(messageBody, callback) {
+  console.log('sendMessage called with messageBody', messageBody);
+  var params = {
+    MessageBody: messageBody,
+    QueueUrl: queueUrl,
+    DelaySeconds: 0,
+  };
+
+  sqs.sendMessage(params, function(err, data) {
+    if (err) {
+      console.error('sendMessage error:', err, err.stack);
+    }
+    else {
+      console.log('sendMessage done:', data);
+    }
+
+    callback(err, data);
+  });
+}
+
+function ReceiveMessage(callback) {
   var params = {
     QueueUrl: queueUrl, /* required */
     AttributeNames: [
@@ -17,13 +40,15 @@ function receiveMessage() {
   sqs.receiveMessage(params, function(err, data) {
     if (err) {
       console.error(err, err.stack); // an error occurred
+      callback(err, null);
     }
     else {
       var messages = data.Messages;
       if(messages) {
         var firstMessage = messages[0];
         console.log('Received message: '  + JSON.stringify(firstMessage));
-        deleteMessage(firstMessage.ReceiptHandle);
+        deleteMessage(firstMessage.ReceiptHandle); //TODO: Remove this, make it app responsibilty
+        callback(null, firstMessage);
       }
     }
   });
@@ -43,5 +68,3 @@ function deleteMessage(receiptHandle) {
     }
   });
 };
-
-setInterval(receiveMessage, 2000);
