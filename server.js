@@ -1,4 +1,5 @@
 var Hapi = require('hapi');
+var Path = require('path');
 var Fs = require('fs');
 var BeaverBuild = require('./beaverbuild');
 var Fetcher = require('./fetcher');
@@ -16,15 +17,28 @@ else {
   server = new Hapi.Server('localhost', 8000, { cors: true });
 }
 
-// Add the route
+// Set up views
+server.views({
+  engines: {
+    html: require('handlebars')
+  },
+  path: './views',
+  layoutPath: './views/layout',
+  helpersPath: './views/helpers',
+  partialsPath: './views/partials',
+  isCached: false //Remove in production!
+});
+
+// Add route for rendering home page
 server.route({
   method: 'GET',
   path: '/',
   handler: function (request, reply) {
-    reply('Welcome to Eager Beaver!');
+    reply.view('index');
   }
 });
 
+// Add route for receiving webhook requests
 server.route({
   method: 'POST',
   path: '/',
