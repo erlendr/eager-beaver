@@ -50,7 +50,8 @@ server.route({
   method: 'POST',
   path: '/',
   handler: function (request, reply) {
-    server.log('Webhook request received:', request.payload.payload);
+    server.log('Request:', request);
+    server.log('Webhook request received', '');
 
     server.log('Sending webhook payload to job queue...')
     JobQueue.SendMessage(request.payload.payload, function (err, data) {

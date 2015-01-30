@@ -45,7 +45,7 @@ function FetchJob(request) {
       server.error('Error receiving message from job queue:', err);
     }
     else {
-      server.log('Messsage received:', msg);
+      server.log('Messsage received', '');
       var payload = JSON.parse(msg.Body);
       if(payload == null) {
         server.error('Could not parse message body');

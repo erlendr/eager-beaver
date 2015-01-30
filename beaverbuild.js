@@ -10,6 +10,12 @@ function Build(path, callback) {
     return;
   }
 
+  var targetBuildConfig = require(path + 'buildconfig.json');
+  if(!targetBuildConfig) {
+    console.error('Error: No buildconfig.json found in path "' + path + '"');
+    return;
+  }
+
   console.log('Building package ' + targetPackage.name + '@' + targetPackage.version);
 
   installPackageDeps(path, function(installDir) {
@@ -18,11 +24,12 @@ function Build(path, callback) {
 }
 
 function installPackageDeps(installDir, callback) {
+  console.log('Installing dependencies');
   child = cp.exec('npm install', {cwd: installDir},
     function(error, stdout, stderr) {
       console.log('installPackageDeps error: ' + stderr);
       if (error !== null) {
-        console.log('installPackageDeps error: ' + error);
+        console.error('installPackageDeps error: ' + error);
       }
       
       //Calling supplied callback
@@ -34,8 +41,20 @@ function installPackageDeps(installDir, callback) {
   })
 }
 
-function buildSite(installFolder, callback) {
-  child = cp.exec('grunt', { cwd: installFolder},
+function buildSite(installFolder, buildConfig, callback) {
+  if(!buildConfig.buildCommand) {
+    console.error('buildconfig.json missing buildCommand');
+    return;
+  }
+
+  if(!buildConfig.buildOutputDir) {
+    console.error('buildconfig.json missing buildOutputDir');
+    return;
+  }
+
+  console.log('buildSite executing "' + buildConfig.buildCommand + '"...');
+
+  child = cp.exec(buildConfig.buildCommand, { cwd: installFolder},
     function (error, stdout, stderr) {
       console.log('buildSite: ' + stdout);
       console.log('buildSite error: ' + stderr);
@@ -45,6 +64,6 @@ function buildSite(installFolder, callback) {
       }
 
       //Calling supplied callback
-      callback(installFolder + '/build/');
+      callback(installFolder + buildConfig.buildOutputDir);
     });
 }
