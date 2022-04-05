@@ -16,7 +16,7 @@
     "aws-sdk": "^2.0.3",
     "github": "^0.2.3",
     "good": "^5.1.1",
-    "good-console": "^4.1.0",
+    "good-console": "^8.0.0",
     "handlebars": "^2.0.0",
     "hapi": "^8.1.0",
     "mime": "^1.2.11",
