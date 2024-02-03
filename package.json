@@ -15,10 +15,10 @@
   "dependencies": {
     "aws-sdk": "^2.0.3",
     "github": "^0.2.3",
-    "good": "^5.1.1",
-    "good-console": "^4.1.0",
+    "good": "^8.1.2",
+    "good-console": "^8.0.0",
     "handlebars": "^2.0.0",
-    "hapi": "^8.1.0",
+    "hapi": "^18.1.0",
     "mime": "^1.2.11",
     "npm": "^1.4.16",
     "rimraf": "^2.2.8",
